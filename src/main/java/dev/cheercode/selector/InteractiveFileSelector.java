@@ -5,6 +5,7 @@ import dev.cheercode.contract.FileItem;
 import dev.cheercode.contract.FileSelector;
 import dev.cheercode.contract.UserInterface;
 import dev.cheercode.model.FileItemImpl;
+import dev.cheercode.ui.ConsoleUserInterface;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -146,12 +147,25 @@ public class InteractiveFileSelector implements FileSelector {
 
     private void showFileList(List<FileItem> files) {
         userInterface.showMessage("\nТекущий список файлов:");
-        for (int i = 0; i < files.size(); i++) {
-            FileItem item = files.get(i);
-            String status = item.isIncluded() ? "+" : "-";
-            String type = item.isDirectory() ? "[DIR]" : "[FILE]";
-            userInterface.showMessage(String.format("%3d. %s %s %s",
-                    i + 1, status, type, item.getDisplayName()));
+
+        // Проверяем, является ли userInterface экземпляром ConsoleUserInterface для цветного вывода
+        if (userInterface instanceof ConsoleUserInterface) {
+            ConsoleUserInterface consoleUI = (ConsoleUserInterface) userInterface;
+            for (int i = 0; i < files.size(); i++) {
+                FileItem item = files.get(i);
+                String status = item.isIncluded() ? "+" : "-";
+                String type = item.isDirectory() ? "[DIR]" : "[FILE]";
+                consoleUI.showFileItem(i + 1, status, type, item.getDisplayName(), item.isIncluded());
+            }
+        } else {
+            // Fallback для других реализаций UserInterface с улучшенным форматированием
+            for (int i = 0; i < files.size(); i++) {
+                FileItem item = files.get(i);
+                String status = item.isIncluded() ? "+" : "-";
+                String type = item.isDirectory() ? "[DIR]" : "[FILE]";
+                userInterface.showMessage(String.format("%3d. %s %-6s %s",
+                        i + 1, status, type, item.getDisplayName()));
+            }
         }
     }
 
