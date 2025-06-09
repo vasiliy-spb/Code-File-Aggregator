@@ -1,4 +1,9 @@
-package dev.cheercode;
+package dev.cheercode.processor;
+
+import dev.cheercode.contract.FileFilter;
+import dev.cheercode.contract.FileProcessor;
+import dev.cheercode.contract.OutputFormatter;
+import dev.cheercode.contract.OutputWriter;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

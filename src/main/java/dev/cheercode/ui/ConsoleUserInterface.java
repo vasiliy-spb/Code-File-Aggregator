@@ -1,4 +1,6 @@
-package dev.cheercode;
+package dev.cheercode.ui;
+
+import dev.cheercode.contract.UserInterface;
 
 import java.util.Scanner;
 

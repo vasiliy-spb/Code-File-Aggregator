@@ -1,4 +1,6 @@
-package dev.cheercode;
+package dev.cheercode.io;
+
+import dev.cheercode.contract.OutputWriter;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

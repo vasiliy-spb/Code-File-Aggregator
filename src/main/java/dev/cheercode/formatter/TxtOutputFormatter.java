@@ -1,4 +1,7 @@
-package dev.cheercode;
+package dev.cheercode.formatter;
+
+import dev.cheercode.contract.OutputFormatter;
+import dev.cheercode.contract.OutputWriter;
 
 import java.util.Date;
 import java.util.List;

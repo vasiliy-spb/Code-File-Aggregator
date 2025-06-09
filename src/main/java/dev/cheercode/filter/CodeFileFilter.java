@@ -1,4 +1,6 @@
-package dev.cheercode;
+package dev.cheercode.filter;
+
+import dev.cheercode.contract.FileFilter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

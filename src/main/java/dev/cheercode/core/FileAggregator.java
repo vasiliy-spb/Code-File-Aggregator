@@ -1,4 +1,10 @@
-package dev.cheercode;
+package dev.cheercode.core;
+
+import dev.cheercode.io.FileOutputWriter;
+import dev.cheercode.contract.FileProcessor;
+import dev.cheercode.contract.OutputFormatter;
+import dev.cheercode.contract.OutputWriter;
+import dev.cheercode.contract.UserInterface;
 
 import java.io.IOException;
 import java.nio.file.Files;

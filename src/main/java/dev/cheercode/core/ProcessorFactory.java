@@ -1,4 +1,10 @@
-package dev.cheercode;
+package dev.cheercode.core;
+
+import dev.cheercode.contract.FileFilter;
+import dev.cheercode.contract.FileProcessor;
+import dev.cheercode.contract.OutputFormatter;
+import dev.cheercode.processor.DirectoryProcessor;
+import dev.cheercode.processor.ZipProcessor;
 
 import java.util.Arrays;
 import java.util.List;

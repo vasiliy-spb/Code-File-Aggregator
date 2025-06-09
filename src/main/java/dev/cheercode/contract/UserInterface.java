@@ -1,4 +1,4 @@
-package dev.cheercode;
+package dev.cheercode.contract;
 
 public interface UserInterface {
     String getInputPath();

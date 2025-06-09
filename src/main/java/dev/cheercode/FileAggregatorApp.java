@@ -1,5 +1,13 @@
 package dev.cheercode;
 
+import dev.cheercode.core.FileAggregator;
+import dev.cheercode.core.ProcessorFactory;
+import dev.cheercode.filter.CodeFileFilter;
+import dev.cheercode.formatter.TxtOutputFormatter;
+import dev.cheercode.contract.FileFilter;
+import dev.cheercode.contract.OutputFormatter;
+import dev.cheercode.ui.ConsoleUserInterface;
+
 public class FileAggregatorApp {
     public static void main(String[] args) {
         // Dependency Injection - создаем все зависимости
