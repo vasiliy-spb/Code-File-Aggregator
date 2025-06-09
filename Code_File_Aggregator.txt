@@ -1,0 +1,397 @@
+================================================================================
+АГРЕГИРОВАННЫЕ ФАЙЛЫ ПРОЕКТА
+Источник: /Users/vasiliy/IdeaProjects/Code_File_Aggregator
+Создано: Mon Jun 09 13:09:45 GMT+07:00 2025
+================================================================================
+
+
+/==============================================================================/
+// ФАЙЛ: Code_File_Aggregator.txt
+/==============================================================================/
+   1 | ================================================================================
+   2 | АГРЕГИРОВАННЫЕ ФАЙЛЫ ПРОЕКТА
+   3 | Источник: /Users/vasiliy/IdeaProjects/Code_File_Aggregator
+   4 | Создано: Mon Jun 09 13:09:45 GMT+07:00 2025
+   5 | ================================================================================
+   6 | 
+   7 | 
+   8 | /==============================================================================/
+   9 | // ФАЙЛ: Code_File_Aggregator.txt
+  10 | /=======================================================
+
+/------------------------------------------------------------------------------/
+
+
+/==============================================================================/
+// ФАЙЛ: gradle/wrapper/gradle-wrapper.properties
+/==============================================================================/
+   1 | #Mon Jun 09 12:41:04 GMT+07:00 2025
+   2 | distributionBase=GRADLE_USER_HOME
+   3 | distributionPath=wrapper/dists
+   4 | distributionUrl=https\://services.gradle.org/distributions/gradle-8.10-bin.zip
+   5 | zipStoreBase=GRADLE_USER_HOME
+   6 | zipStorePath=wrapper/dists
+
+/------------------------------------------------------------------------------/
+
+
+/==============================================================================/
+// ФАЙЛ: gradlew.bat
+/==============================================================================/
+   1 | @rem
+   2 | @rem Copyright 2015 the original author or authors.
+   3 | @rem
+   4 | @rem Licensed under the Apache License, Version 2.0 (the "License");
+   5 | @rem you may not use this file except in compliance with the License.
+   6 | @rem You may obtain a copy of the License at
+   7 | @rem
+   8 | @rem      https://www.apache.org/licenses/LICENSE-2.0
+   9 | @rem
+  10 | @rem Unless required by applicable law or agreed to in writing, software
+  11 | @rem distributed under the License is distributed on an "AS IS" BASIS,
+  12 | @rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  13 | @rem See the License for the specific language governing permissions and
+  14 | @rem limitations under the License.
+  15 | @rem
+  16 | 
+  17 | @if "%DEBUG%" == "" @echo off
+  18 | @rem ##########################################################################
+  19 | @rem
+  20 | @rem  Gradle startup script for Windows
+  21 | @rem
+  22 | @rem ##########################################################################
+  23 | 
+  24 | @rem Set local scope for the variables with windows NT shell
+  25 | if "%OS%"=="Windows_NT" setlocal
+  26 | 
+  27 | set DIRNAME=%~dp0
+  28 | if "%DIRNAME%" == "" set DIRNAME=.
+  29 | set APP_BASE_NAME=%~n0
+  30 | set APP_HOME=%DIRNAME%
+  31 | 
+  32 | @rem Resolve any "." and ".." in APP_HOME to make it shorter.
+  33 | for %%i in ("%APP_HOME%") do set APP_HOME=%%~fi
+  34 | 
+  35 | @rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
+  36 | set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m"
+  37 | 
+  38 | @rem Find java.exe
+  39 | if defined JAVA_HOME goto findJavaFromJavaHome
+  40 | 
+  41 | set JAVA_EXE=java.exe
+  42 | %JAVA_EXE% -version >NUL 2>&1
+  43 | if "%ERRORLEVEL%" == "0" goto execute
+  44 | 
+  45 | echo.
+  46 | echo ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
+  47 | echo.
+  48 | echo Please set the JAVA_HOME variable in your environment to match the
+  49 | echo location of your Java installation.
+  50 | 
+  51 | goto fail
+  52 | 
+  53 | :findJavaFromJavaHome
+  54 | set JAVA_HOME=%JAVA_HOME:"=%
+  55 | set JAVA_EXE=%JAVA_HOME%/bin/java.exe
+  56 | 
+  57 | if exist "%JAVA_EXE%" goto execute
+  58 | 
+  59 | echo.
+  60 | echo ERROR: JAVA_HOME is set to an invalid directory: %JAVA_HOME%
+  61 | echo.
+  62 | echo Please set the JAVA_HOME variable in your environment to match the
+  63 | echo location of your Java installation.
+  64 | 
+  65 | goto fail
+  66 | 
+  67 | :execute
+  68 | @rem Setup the command line
+  69 | 
+  70 | set CLASSPATH=%APP_HOME%\gradle\wrapper\gradle-wrapper.jar
+  71 | 
+  72 | 
+  73 | @rem Execute Gradle
+  74 | "%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %GRADLE_OPTS% "-Dorg.gradle.appname=%APP_BASE_NAME%" -classpath "%CLASSPATH%" org.gradle.wrapper.GradleWrapperMain %*
+  75 | 
+  76 | :end
+  77 | @rem End local scope for the variables with windows NT shell
+  78 | if "%ERRORLEVEL%"=="0" goto mainEnd
+  79 | 
+  80 | :fail
+  81 | rem Set variable GRADLE_EXIT_CONSOLE if you need the _script_ return code instead of
+  82 | rem the _cmd.exe /c_ return code!
+  83 | if  not "" == "%GRADLE_EXIT_CONSOLE%" exit 1
+  84 | exit /b 1
+  85 | 
+  86 | :mainEnd
+  87 | if "%OS%"=="Windows_NT" endlocal
+  88 | 
+  89 | :omega
+
+/------------------------------------------------------------------------------/
+
+
+/==============================================================================/
+// ФАЙЛ: src/main/java/dev/cheercode/FileAggregator.java
+/==============================================================================/
+   1 | package dev.cheercode;
+   2 | 
+   3 | import java.io.*;
+   4 | import java.nio.charset.StandardCharsets;
+   5 | import java.nio.file.*;
+   6 | import java.util.*;
+   7 | import java.util.zip.ZipEntry;
+   8 | import java.util.zip.ZipInputStream;
+   9 | 
+  10 | public class FileAggregator {
+  11 | 
+  12 |     // Расширения файлов, которые будут включены в результат
+  13 |     private static final Set<String> ALLOWED_EXTENSIONS = new HashSet<>(Arrays.asList(
+  14 |             ".java", ".js", ".ts", ".py", ".cpp", ".c", ".h", ".hpp", ".cs", ".php",
+  15 |             ".html", ".css", ".xml", ".json", ".yml", ".yaml", ".properties", ".txt",
+  16 |             ".md", ".sql", ".sh", ".bat", ".ps1", ".gradle", ".maven", ".pom"
+  17 |     ));
+  18 | 
+  19 |     // Файлы и папки, которые следует игнорировать
+  20 |     private static final Set<String> IGNORED_NAMES = new HashSet<>(Arrays.asList(
+  21 |             ".git", ".idea", ".vscode", "node_modules", "target", "build",
+  22 |             "bin", "obj", ".gradle", ".settings", "dist", "out"
+  23 |     ));
+  24 | 
+  25 |     public static void main(String[] args) {
+  26 |         Scanner scanner = new Scanner(System.in);
+  27 | 
+  28 |         try {
+  29 |             System.out.println("=".repeat(60));
+  30 |             System.out.println("СБОРЩИК ФАЙЛОВ ПРОЕКТА В ОДИН TXT");
+  31 |             System.out.println("=".repeat(60));
+  32 |             System.out.println();
+  33 | 
+  34 |             // Запрашиваем путь к источнику
+  35 |             System.out.println("Введите путь к архиву или директории: ");
+  36 |             String inputPath = scanner.nextLine().trim();
+  37 | 
+  38 |             if (inputPath.isEmpty()) {
+  39 |                 System.out.println("Ошибка: Путь не может быть пустым!");
+  40 |                 return;
+  41 |             }
+  42 | 
+  43 |             // Проверяем существование файла/директории
+  44 |             Path input = Paths.get(inputPath);
+  45 |             if (!Files.exists(input)) {
+  46 |                 System.out.println("Ошибка: Указанный путь не существует!");
+  47 |                 return;
+  48 |             }
+  49 | 
+  50 |             // Запрашиваем путь для сохранения результата
+  51 |             System.out.println("Введите имя выходного файла (например, project.txt): ");
+  52 |             String outputPath = scanner.nextLine().trim();
+  53 | 
+  54 |             if (outputPath.isEmpty()) {
+  55 |                 outputPath = "aggregated_files.txt";
+  56 |                 System.out.println("Используется имя по умолчанию: " + outputPath);
+  57 |             }
+  58 | 
+  59 |             // Добавляем расширение .txt если его нет
+  60 |             if (!outputPath.toLowerCase().endsWith(".txt")) {
+  61 |                 outputPath += ".txt";
+  62 |                 System.out.println("Добавлено расширение .txt: " + outputPath);
+  63 |             }
+  64 | 
+  65 |             System.out.println();
+  66 |             System.out.println("Обработка файлов...");
+  67 | 
+  68 |             FileAggregator aggregator = new FileAggregator();
+  69 |             aggregator.aggregate(inputPath, outputPath);
+  70 | 
+  71 |             System.out.println();
+  72 |             System.out.println("✓ Файлы успешно собраны в: " + outputPath);
+  73 | 
+  74 |         } catch (Exception e) {
+  75 |             System.err.println("Ошибка: " + e.getMessage());
+  76 |             e.printStackTrace();
+  77 |         } finally {
+  78 |             scanner.close();
+  79 |         }
+  80 |     }
+  81 | 
+  82 |     public void aggregate(String inputPath, String outputPath) throws IOException {
+  83 |         Path input = Paths.get(inputPath);
+  84 | 
+  85 |         try (PrintWriter writer = new PrintWriter(
+  86 |                 new OutputStreamWriter(
+  87 |                         new FileOutputStream(outputPath),
+  88 |                         StandardCharsets.UTF_8
+  89 |                 )
+  90 |         )) {
+  91 |             writer.println("=".repeat(80));
+  92 |             writer.println("АГРЕГИРОВАННЫЕ ФАЙЛЫ ПРОЕКТА");
+  93 |             writer.println("Источник: " + inputPath);
+  94 |             writer.println("Создано: " + new Date());
+  95 |             writer.println("=".repeat(80));
+  96 |             writer.println();
+  97 | 
+  98 |             if (Files.isDirectory(input)) {
+  99 |                 processDirectory(input, writer);
+ 100 |             } else if (isZipFile(inputPath)) {
+ 101 |                 processZipFile(inputPath, writer);
+ 102 |             } else {
+ 103 |                 throw new IllegalArgumentException("Путь должен указывать на директорию или ZIP архив");
+ 104 |             }
+ 105 |         }
+ 106 |     }
+ 107 | 
+ 108 |     private void processDirectory(Path directory, PrintWriter writer) throws IOException {
+ 109 |         Files.walk(directory)
+ 110 |                 .filter(Files::isRegularFile)
+ 111 |                 .filter(this::shouldIncludeFile)
+ 112 |                 .sorted()
+ 113 |                 .forEach(file -> processFile(file, directory, writer));
+ 114 |     }
+ 115 | 
+ 116 |     private void processZipFile(String zipPath, PrintWriter writer) throws IOException {
+ 117 |         try (ZipInputStream zis = new ZipInputStream(
+ 118 |                 new FileInputStream(zipPath), StandardCharsets.UTF_8)) {
+ 119 | 
+ 120 |             ZipEntry entry;
+ 121 |             while ((entry = zis.getNextEntry()) != null) {
+ 122 |                 if (!entry.isDirectory() && shouldIncludeZipEntry(entry)) {
+ 123 |                     processZipEntry(entry, zis, writer);
+ 124 |                 }
+ 125 |                 zis.closeEntry();
+ 126 |             }
+ 127 |         }
+ 128 |     }
+ 129 | 
+ 130 |     private boolean shouldIncludeFile(Path file) {
+ 131 |         String fileName = file.getFileName().toString();
+ 132 |         String extension = getFileExtension(fileName);
+ 133 | 
+ 134 |         // Проверяем, что файл не в игнорируемой папке
+ 135 |         for (Path parent = file.getParent(); parent != null; parent = parent.getParent()) {
+ 136 |             if (parent.getFileName() != null && IGNORED_NAMES.contains(parent.getFileName().toString())) {
+ 137 |                 return false;
+ 138 |             }
+ 139 |         }
+ 140 | 
+ 141 |         // Проверяем расширение файла
+ 142 |         return ALLOWED_EXTENSIONS.contains(extension.toLowerCase()) ||
+ 143 |                 isConfigFile(fileName) ||
+ 144 |                 isDocumentationFile(fileName);
+ 145 |     }
+ 146 | 
+ 147 |     private boolean shouldIncludeZipEntry(ZipEntry entry) {
+ 148 |         String name = entry.getName();
+ 149 |         String fileName = Paths.get(name).getFileName().toString();
+ 150 |         String extension = getFileExtension(fileName);
+ 151 | 
+ 152 |         // Проверяем, что файл не в игнорируемой папке
+ 153 |         String[] pathParts = name.split("/");
+ 154 |         for (String part : pathParts) {
+ 155 |             if (IGNORED_NAMES.contains(part)) {
+ 156 |                 return false;
+ 157 |             }
+ 158 |         }
+ 159 | 
+ 160 |         return ALLOWED_EXTENSIONS.contains(extension.toLowerCase()) ||
+ 161 |                 isConfigFile(fileName) ||
+ 162 |                 isDocumentationFile(fileName);
+ 163 |     }
+ 164 | 
+ 165 |     private void processFile(Path file, Path basePath, PrintWriter writer) {
+ 166 |         try {
+ 167 |             String relativePath = basePath.relativize(file).toString();
+ 168 |             writeFileHeader(writer, relativePath);
+ 169 | 
+ 170 |             List<String> lines = Files.readAllLines(file, StandardCharsets.UTF_8);
+ 171 |             for (int i = 0; i < lines.size(); i++) {
+ 172 |                 writer.printf("%4d | %s%n", i + 1, lines.get(i));
+ 173 |             }
+ 174 | 
+ 175 |             writeFileFooter(writer);
+ 176 |         } catch (IOException e) {
+ 177 |             writer.println("// ОШИБКА ЧТЕНИЯ ФАЙЛА: " + e.getMessage());
+ 178 |             writeFileFooter(writer);
+ 179 |         }
+ 180 |     }
+ 181 | 
+ 182 |     private void processZipEntry(ZipEntry entry, ZipInputStream zis, PrintWriter writer) {
+ 183 |         try {
+ 184 |             writeFileHeader(writer, entry.getName());
+ 185 | 
+ 186 |             BufferedReader reader = new BufferedReader(
+ 187 |                     new InputStreamReader(zis, StandardCharsets.UTF_8));
+ 188 | 
+ 189 |             String line;
+ 190 |             int lineNumber = 1;
+ 191 |             while ((line = reader.readLine()) != null) {
+ 192 |                 writer.printf("%4d | %s%n", lineNumber++, line);
+ 193 |             }
+ 194 | 
+ 195 |             writeFileFooter(writer);
+ 196 |         } catch (IOException e) {
+ 197 |             writer.println("// ОШИБКА ЧТЕНИЯ ФАЙЛА ИЗ АРХИВА: " + e.getMessage());
+ 198 |             writeFileFooter(writer);
+ 199 |         }
+ 200 |     }
+ 201 | 
+ 202 |     private void writeFileHeader(PrintWriter writer, String filePath) {
+ 203 |         writer.println();
+ 204 |         writer.println("/" + "=".repeat(78) + "/");
+ 205 |         writer.println("// ФАЙЛ: " + filePath);
+ 206 |         writer.println("/" + "=".repeat(78) + "/");
+ 207 |     }
+ 208 | 
+ 209 |     private void writeFileFooter(PrintWriter writer) {
+ 210 |         writer.println();
+ 211 |         writer.println("/" + "-".repeat(78) + "/");
+ 212 |         writer.println();
+ 213 |     }
+ 214 | 
+ 215 |     private String getFileExtension(String fileName) {
+ 216 |         int lastDot = fileName.lastIndexOf('.');
+ 217 |         return lastDot == -1 ? "" : fileName.substring(lastDot);
+ 218 |     }
+ 219 | 
+ 220 |     private boolean isConfigFile(String fileName) {
+ 221 |         return fileName.equals("Dockerfile") ||
+ 222 |                 fileName.equals("Makefile") ||
+ 223 |                 fileName.equals("README") ||
+ 224 |                 fileName.equals("LICENSE") ||
+ 225 |                 fileName.equals("pom.xml") ||
+ 226 |                 fileName.equals("build.gradle") ||
+ 227 |                 fileName.equals("package.json") ||
+ 228 |                 fileName.equals("requirements.txt") ||
+ 229 |                 fileName.equals("Cargo.toml") ||
+ 230 |                 fileName.equals("go.mod");
+ 231 |     }
+ 232 | 
+ 233 |     private boolean isDocumentationFile(String fileName) {
+ 234 |         return fileName.toLowerCase().startsWith("readme") ||
+ 235 |                 fileName.toLowerCase().startsWith("changelog") ||
+ 236 |                 fileName.toLowerCase().startsWith("license");
+ 237 |     }
+ 238 | 
+ 239 |     private boolean isZipFile(String path) {
+ 240 |         return path.toLowerCase().endsWith(".zip") ||
+ 241 |                 path.toLowerCase().endsWith(".jar") ||
+ 242 |                 path.toLowerCase().endsWith(".war");
+ 243 |     }
+ 244 | }
+
+/------------------------------------------------------------------------------/
+
+
+/==============================================================================/
+// ФАЙЛ: src/main/java/dev/cheercode/Main.java
+/==============================================================================/
+   1 | package dev.cheercode;
+   2 | 
+   3 | public class Main {
+   4 |     public static void main(String[] args) {
+   5 | 
+   6 |     }
+   7 | }
+
+/------------------------------------------------------------------------------/
+
