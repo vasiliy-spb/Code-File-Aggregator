@@ -36,6 +36,12 @@ public class ConsoleUserInterface implements UserInterface {
     }
 
     @Override
+    public String getCommand() {
+        System.out.print("> ");
+        return scanner.nextLine().trim();
+    }
+
+    @Override
     public void showMessage(String message) {
         System.out.println(message);
     }

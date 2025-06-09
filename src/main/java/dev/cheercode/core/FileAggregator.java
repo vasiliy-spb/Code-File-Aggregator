@@ -1,26 +1,29 @@
 package dev.cheercode.core;
 
+import dev.cheercode.contract.*;
+import dev.cheercode.filter.SelectiveFileFilter;
 import dev.cheercode.io.FileOutputWriter;
-import dev.cheercode.contract.FileProcessor;
-import dev.cheercode.contract.OutputFormatter;
-import dev.cheercode.contract.OutputWriter;
-import dev.cheercode.contract.UserInterface;
+import dev.cheercode.selector.InteractiveFileSelector;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 public class FileAggregator {
     private final UserInterface userInterface;
     private final ProcessorFactory processorFactory;
     private final OutputFormatter formatter;
+    private final FileFilter baseFileFilter;
 
     public FileAggregator(UserInterface userInterface,
                           ProcessorFactory processorFactory,
-                          OutputFormatter formatter) {
+                          OutputFormatter formatter,
+                          FileFilter baseFileFilter) {
         this.userInterface = userInterface;
         this.processorFactory = processorFactory;
         this.formatter = formatter;
+        this.baseFileFilter = baseFileFilter;
     }
 
     public void run() {
@@ -30,9 +33,18 @@ public class FileAggregator {
             String inputPath = getValidInputPath();
             String outputPath = userInterface.getOutputPath();
 
+            // Интерактивный выбор файлов
+            FileSelector fileSelector = new InteractiveFileSelector(baseFileFilter, userInterface);
+            List<FileItem> availableFiles = fileSelector.collectFiles(inputPath);
+            fileSelector.processUserSelection(availableFiles);
+
+            // Создаем новый фильтр на основе выбранных файлов
+            FileFilter selectiveFilter = new SelectiveFileFilter(availableFiles, baseFileFilter);
+            ProcessorFactory selectiveProcessorFactory = new ProcessorFactory(selectiveFilter, formatter);
+
             userInterface.showMessage("Обработка файлов...");
 
-            aggregateFiles(inputPath, outputPath);
+            aggregateFiles(inputPath, outputPath, selectiveProcessorFactory);
 
             userInterface.showMessage("✓ Файлы успешно собраны в: " + outputPath);
 
@@ -67,7 +79,7 @@ public class FileAggregator {
         }
     }
 
-    private void aggregateFiles(String inputPath, String outputPath) throws IOException {
+    private void aggregateFiles(String inputPath, String outputPath, ProcessorFactory processorFactory) throws IOException {
         FileProcessor processor = processorFactory.getProcessor(inputPath);
 
         if (processor == null) {

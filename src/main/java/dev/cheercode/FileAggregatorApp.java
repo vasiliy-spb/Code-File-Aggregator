@@ -17,7 +17,7 @@ public class FileAggregatorApp {
         ConsoleUserInterface userInterface = new ConsoleUserInterface();
 
         // Создаем главный объект приложения
-        FileAggregator aggregator = new FileAggregator(userInterface, processorFactory, formatter);
+        FileAggregator aggregator = new FileAggregator(userInterface, processorFactory, formatter, fileFilter);
 
         try {
             // Запускаем приложение

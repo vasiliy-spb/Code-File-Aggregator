@@ -5,6 +5,8 @@ public interface UserInterface {
 
     String getOutputPath();
 
+    String getCommand();
+
     void showMessage(String message);
 
     void showError(String error);
