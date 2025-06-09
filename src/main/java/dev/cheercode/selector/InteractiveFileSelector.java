@@ -42,31 +42,35 @@ public class InteractiveFileSelector implements FileSelector {
     private List<FileItem> collectFromDirectory(String inputPath) throws IOException {
         Path directory = Paths.get(inputPath);
         Map<String, FileItem> items = new TreeMap<>();
+        Set<String> includedDirectories = new HashSet<>();
 
-        // Сначала собираем все директории
-        Files.walk(directory)
-                .filter(Files::isDirectory)
-                .filter(path -> !path.equals(directory))
-                .forEach(path -> {
-                    String relativePath = directory.relativize(path).toString().replace('\\', '/');
-                    items.put(relativePath, new FileItemImpl(relativePath, true, relativePath));
-                });
-
-        // Затем собираем файлы
+        // Сначала собираем файлы, которые проходят фильтр
         Files.walk(directory)
                 .filter(Files::isRegularFile)
                 .filter(file -> fileFilter.shouldInclude(file.toString()))
                 .forEach(file -> {
                     String relativePath = directory.relativize(file).toString().replace('\\', '/');
                     items.put(relativePath, new FileItemImpl(relativePath, false, relativePath));
+
+                    // Отмечаем все родительские директории как нужные
+                    String parentPath = relativePath;
+                    while (parentPath.contains("/")) {
+                        parentPath = parentPath.substring(0, parentPath.lastIndexOf("/"));
+                        includedDirectories.add(parentPath);
+                    }
                 });
+
+        // Затем добавляем только те директории, которые содержат нужные файлы
+        for (String dirPath : includedDirectories) {
+            items.put(dirPath, new FileItemImpl(dirPath, true, dirPath));
+        }
 
         return new ArrayList<>(items.values());
     }
 
     private List<FileItem> collectFromArchive(String inputPath) throws IOException {
         List<FileItem> items = new ArrayList<>();
-        Set<String> directories = new TreeSet<>();
+        Set<String> includedDirectories = new TreeSet<>();
 
         try (ZipInputStream zis = new ZipInputStream(
                 new FileInputStream(inputPath), StandardCharsets.UTF_8)) {
@@ -75,25 +79,25 @@ public class InteractiveFileSelector implements FileSelector {
             while ((entry = zis.getNextEntry()) != null) {
                 String entryName = entry.getName().replace('\\', '/');
 
-                if (entry.isDirectory()) {
-                    directories.add(entryName.endsWith("/") ? entryName.substring(0, entryName.length()-1) : entryName);
-                } else if (fileFilter.shouldInclude(entryName)) {
-                    // Добавляем родительские директории
-                    String parentDir = entryName.substring(0, Math.max(0, entryName.lastIndexOf('/')));
-                    while (!parentDir.isEmpty() && !directories.contains(parentDir)) {
-                        directories.add(parentDir);
-                        parentDir = parentDir.substring(0, Math.max(0, parentDir.lastIndexOf('/')));
-                    }
-
+                if (!entry.isDirectory() && fileFilter.shouldInclude(entryName)) {
                     items.add(new FileItemImpl(entryName, false, entryName));
+
+                    // Добавляем родительские директории для файлов, которые прошли фильтр
+                    String parentDir = entryName;
+                    while (parentDir.contains("/")) {
+                        parentDir = parentDir.substring(0, parentDir.lastIndexOf("/"));
+                        if (!parentDir.isEmpty()) {
+                            includedDirectories.add(parentDir);
+                        }
+                    }
                 }
                 zis.closeEntry();
             }
         }
 
-        // Добавляем директории в начало списка
+        // Добавляем только директории, которые содержат нужные файлы
         List<FileItem> result = new ArrayList<>();
-        for (String dir : directories) {
+        for (String dir : includedDirectories) {
             result.add(new FileItemImpl(dir, true, dir));
         }
         result.addAll(items);
