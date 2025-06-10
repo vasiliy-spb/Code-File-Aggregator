@@ -10,12 +10,17 @@ import java.util.Set;
 
 public class CodeFileFilter implements FileFilter {
     private static final Set<String> ALLOWED_EXTENSIONS = new HashSet<>(Arrays.asList(
-            // Существующие языки
-            ".java", ".js", ".ts", ".py", ".cpp", ".c", ".h", ".hpp", ".cs", ".php",
-            ".html", ".css", ".xml", ".json", ".yml", ".yaml", ".properties", ".txt",
-            ".md", ".sql", ".sh", ".bat", ".ps1", ".gradle", ".maven", ".pom",
-
-            // Дополнительные языки программирования
+            // Языки программирования
+            ".java",         // Java
+            ".js",           // JavaScript
+            ".ts",           // TypeScript
+            ".py",           // Python
+            ".cpp",          // C++
+            ".c",            // C
+            ".h",            // C/C++ заголовочные файлы
+            ".hpp",          // C++ заголовочные файлы
+            ".cs",           // C#
+            ".php",          // PHP
             ".go",           // Go
             ".rs",           // Rust
             ".kt", ".kts",   // Kotlin
@@ -39,51 +44,61 @@ public class CodeFileFilter implements FileFilter {
             ".zig",          // Zig
             ".v",            // V
             ".d",            // D
+            ".m", ".mm",     // Objective-C
 
-            // Web и стили
+            // Веб-разработка
+            ".html", ".css",  // Основные веб-технологии
             ".scss", ".sass", ".less", ".styl", // CSS препроцессоры
             ".vue",          // Vue.js
             ".svelte",       // Svelte
             ".jsx", ".tsx",  // React
             ".astro",        // Astro
+            ".graphql", ".gql", // GraphQL
 
-            // Конфигурационные файлы
+            // Данные и конфигурация
+            ".xml", ".json", // Структурированные данные
+            ".yml", ".yaml", // YAML конфиги
+            ".properties",  // Properties файлы
             ".toml",         // TOML конфигурация
             ".ini", ".cfg",  // INI конфигурация
             ".env",          // Environment файлы
-            ".gitignore", ".gitattributes", // Git файлы
-            ".editorconfig", // EditorConfig
-            ".prettierrc",   // Prettier
-            ".eslintrc",     // ESLint
-
-            // Данные и схемы
-            ".graphql", ".gql", // GraphQL
             ".proto",        // Protocol Buffers
             ".avsc",         // Avro Schema
             ".xsd",          // XML Schema
+            ".plist",        // Property List (iOS/macOS)
 
-            // Специфичные файлы сборки и развертывания
-            ".dockerfile",   // Dockerfile альтернативное расширение
-            ".mk",           // Makefile альтернативное расширение
+            // Системы контроля версий
+            ".gitignore", ".gitattributes", // Git файлы
+
+            // Документация и текстовые файлы
+            ".txt",         // Простой текст
+            ".md",          // Markdown
+            ".rst",          // reStructuredText
+            ".adoc", ".asciidoc", // AsciiDoc
+            ".tex",          // LaTeX
+            ".org",          // Org-mode
+
+            // Скрипты и автоматизация
+            ".sh", ".bat", ".ps1", // Основные скрипты
+            ".zsh", ".fish", ".csh", // Различные shell'ы
+            ".awk",          // AWK
+            ".sed",          // SED скрипты
+            ".gradle",       // Gradle скрипты
+            ".sql",          // SQL скрипты
+
+            // Системы сборки
+            ".maven", ".pom", // Maven
             ".cmake",        // CMake
             ".sbt",          // Scala Build Tool
             ".bazel", ".bzl", // Bazel
             ".nix",          // Nix
+            ".mk",           // Makefile альтернативное расширение
+            ".dockerfile",   // Dockerfile альтернативное расширение
 
-            // Мобильная разработка
-            ".m", ".mm",     // Objective-C
-            ".plist",        // Property List (iOS/macOS)
-
-            // Скрипты и автоматизация
-            ".zsh", ".fish", ".csh", // Различные shell'ы
-            ".awk",          // AWK
-            ".sed",          // SED скрипты
-
-            // Документация и разметка
-            ".rst",          // reStructuredText
-            ".adoc", ".asciidoc", // AsciiDoc
-            ".tex",          // LaTeX
-            ".org"           // Org-mode
+            // Инструменты разработки
+            ".editorconfig", // EditorConfig
+            ".prettierrc",   // Prettier
+            ".eslintrc"      // ESLint
     ));
 
     private static final Set<String> IGNORED_NAMES = new HashSet<>(Arrays.asList(
