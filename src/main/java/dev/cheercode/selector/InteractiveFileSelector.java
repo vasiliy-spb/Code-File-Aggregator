@@ -1,114 +1,36 @@
 package dev.cheercode.selector;
 
+import dev.cheercode.collector.FileCollector;
 import dev.cheercode.contract.FileFilter;
 import dev.cheercode.contract.FileItem;
 import dev.cheercode.contract.FileSelector;
 import dev.cheercode.contract.UserInterface;
-import dev.cheercode.model.FileItemImpl;
-import dev.cheercode.ui.ConsoleUserInterface;
+import dev.cheercode.selector.handler.UserSelectionHandler;
+import dev.cheercode.selector.presenter.FileListPresenter;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.io.FileInputStream;
-import java.nio.charset.StandardCharsets;
 
 public class InteractiveFileSelector implements FileSelector {
-    private final FileFilter fileFilter;
+    private final FileCollector fileCollector;
+    private final UserSelectionHandler selectionHandler;
+    private final FileListPresenter listPresenter;
     private final UserInterface userInterface;
 
     public InteractiveFileSelector(FileFilter fileFilter, UserInterface userInterface) {
-        this.fileFilter = fileFilter;
         this.userInterface = userInterface;
+        this.fileCollector = new FileCollector(fileFilter);
+        this.selectionHandler = new UserSelectionHandler(userInterface);
+        this.listPresenter = new FileListPresenter(userInterface);
     }
 
     @Override
     public List<FileItem> collectFiles(String inputPath) {
         try {
-            if (Files.isDirectory(Paths.get(inputPath))) {
-                return collectFromDirectory(inputPath);
-            } else if (isArchive(inputPath)) {
-                return collectFromArchive(inputPath);
-            }
-        } catch (IOException e) {
+            return fileCollector.collectFiles(inputPath);
+        } catch (Exception e) {
             userInterface.showError("Ошибка при сборе файлов: " + e.getMessage());
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
-    }
-
-    private List<FileItem> collectFromDirectory(String inputPath) throws IOException {
-        Path directory = Paths.get(inputPath);
-        Map<String, FileItem> items = new TreeMap<>();
-        Set<String> includedDirectories = new HashSet<>();
-
-        // Сначала собираем файлы, которые проходят фильтр
-        Files.walk(directory)
-                .filter(Files::isRegularFile)
-                .filter(file -> fileFilter.shouldInclude(file.toString()))
-                .forEach(file -> {
-                    String relativePath = directory.relativize(file).toString().replace('\\', '/');
-                    items.put(relativePath, new FileItemImpl(relativePath, false, relativePath));
-
-                    // Отмечаем все родительские директории как нужные
-                    String parentPath = relativePath;
-                    while (parentPath.contains("/")) {
-                        parentPath = parentPath.substring(0, parentPath.lastIndexOf("/"));
-                        includedDirectories.add(parentPath);
-                    }
-                });
-
-        // Затем добавляем только те директории, которые содержат нужные файлы
-        for (String dirPath : includedDirectories) {
-            items.put(dirPath, new FileItemImpl(dirPath, true, dirPath));
-        }
-
-        return new ArrayList<>(items.values());
-    }
-
-    private List<FileItem> collectFromArchive(String inputPath) throws IOException {
-        List<FileItem> items = new ArrayList<>();
-        Set<String> includedDirectories = new TreeSet<>();
-
-        try (ZipInputStream zis = new ZipInputStream(
-                new FileInputStream(inputPath), StandardCharsets.UTF_8)) {
-
-            ZipEntry entry;
-            while ((entry = zis.getNextEntry()) != null) {
-                String entryName = entry.getName().replace('\\', '/');
-
-                if (!entry.isDirectory() && fileFilter.shouldInclude(entryName)) {
-                    items.add(new FileItemImpl(entryName, false, entryName));
-
-                    // Добавляем родительские директории для файлов, которые прошли фильтр
-                    String parentDir = entryName;
-                    while (parentDir.contains("/")) {
-                        parentDir = parentDir.substring(0, parentDir.lastIndexOf("/"));
-                        if (!parentDir.isEmpty()) {
-                            includedDirectories.add(parentDir);
-                        }
-                    }
-                }
-                zis.closeEntry();
-            }
-        }
-
-        // Добавляем только директории, которые содержат нужные файлы
-        List<FileItem> result = new ArrayList<>();
-        for (String dir : includedDirectories) {
-            result.add(new FileItemImpl(dir, true, dir));
-        }
-        result.addAll(items);
-
-        return result;
-    }
-
-    private boolean isArchive(String inputPath) {
-        String lowerPath = inputPath.toLowerCase();
-        return lowerPath.endsWith(".zip") || lowerPath.endsWith(".jar") || lowerPath.endsWith(".war");
     }
 
     @Override
@@ -118,6 +40,24 @@ public class InteractiveFileSelector implements FileSelector {
             return;
         }
 
+        showInstructions();
+        listPresenter.showFileList(files);
+
+        while (true) {
+            userInterface.showMessage("\nВведите команду: ");
+            String command = userInterface.getCommand();
+
+            if (command.isEmpty()) {
+                break;
+            }
+
+            if (selectionHandler.processCommand(command, files)) {
+                listPresenter.showFileList(files);
+            }
+        }
+    }
+
+    private void showInstructions() {
         userInterface.showMessage("\n" + "=".repeat(60));
         userInterface.showMessage("ВЫБОР ФАЙЛОВ ДЛЯ ВКЛЮЧЕНИЯ В ИТОГОВЫЙ ФАЙЛ");
         userInterface.showMessage("=".repeat(60));
@@ -128,97 +68,5 @@ public class InteractiveFileSelector implements FileSelector {
         userInterface.showMessage("  -.       — исключить все файлы");
         userInterface.showMessage("  пустая строка — завершить редактирование");
         userInterface.showMessage("=".repeat(60));
-
-        showFileList(files);
-
-        while (true) {
-            userInterface.showMessage("\nВведите команду: ");
-            String command = userInterface.getCommand();
-
-            if (command.isEmpty()) {
-                break;
-            }
-
-            if (processCommand(command, files)) {
-                showFileList(files);
-            }
-        }
-    }
-
-    private void showFileList(List<FileItem> files) {
-        userInterface.showMessage("\nТекущий список файлов:");
-
-        // Проверяем, является ли userInterface экземпляром ConsoleUserInterface для цветного вывода
-        if (userInterface instanceof ConsoleUserInterface) {
-            ConsoleUserInterface consoleUI = (ConsoleUserInterface) userInterface;
-            for (int i = 0; i < files.size(); i++) {
-                FileItem item = files.get(i);
-                String status = item.isIncluded() ? "+" : "-";
-                String type = item.isDirectory() ? "[DIR]" : "[FILE]";
-                consoleUI.showFileItem(i + 1, status, type, item.getDisplayName(), item.isIncluded());
-            }
-        } else {
-            // Fallback для других реализаций UserInterface с улучшенным форматированием
-            for (int i = 0; i < files.size(); i++) {
-                FileItem item = files.get(i);
-                String status = item.isIncluded() ? "+" : "-";
-                String type = item.isDirectory() ? "[DIR]" : "[FILE]";
-                userInterface.showMessage(String.format("%3d. %s %-6s %s",
-                        i + 1, status, type, item.getDisplayName()));
-            }
-        }
-    }
-
-    private boolean processCommand(String command, List<FileItem> files) {
-        command = command.trim();
-
-        if (command.equals("+.")) {
-            files.forEach(item -> item.setIncluded(true));
-            userInterface.showMessage("Все файлы включены.");
-            return true;
-        }
-
-        if (command.equals("-.")) {
-            files.forEach(item -> item.setIncluded(false));
-            userInterface.showMessage("Все файлы исключены.");
-            return true;
-        }
-
-        if (command.startsWith("+") || command.startsWith("-")) {
-            boolean include = command.startsWith("+");
-            String numberStr = command.substring(1);
-
-            try {
-                int number = Integer.parseInt(numberStr);
-                if (number >= 1 && number <= files.size()) {
-                    FileItem item = files.get(number - 1);
-
-                    if (item.isDirectory()) {
-                        // Если это директория, применяем операцию ко всем файлам в ней
-                        String dirPath = item.getPath();
-                        long affected = files.stream()
-                                .filter(f -> f.getPath().startsWith(dirPath + "/") || f.getPath().equals(dirPath))
-                                .peek(f -> f.setIncluded(include))
-                                .count();
-
-                        userInterface.showMessage(String.format("Директория %s и %d файлов %s.",
-                                dirPath, affected - 1, include ? "включены" : "исключены"));
-                    } else {
-                        item.setIncluded(include);
-                        userInterface.showMessage(String.format("Файл %s %s.",
-                                item.getPath(), include ? "включен" : "исключен"));
-                    }
-                    return true;
-                } else {
-                    userInterface.showError("Номер файла должен быть от 1 до " + files.size());
-                }
-            } catch (NumberFormatException e) {
-                userInterface.showError("Неверный формат номера файла.");
-            }
-        } else {
-            userInterface.showError("Неверная команда. Используйте +[номер], -[номер], +. или -.");
-        }
-
-        return false;
     }
 }
