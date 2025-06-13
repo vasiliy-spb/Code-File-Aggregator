@@ -93,6 +93,7 @@ public class FileCollector {
     private boolean isArchive(String inputPath) {
         String lowerPath = inputPath.toLowerCase();
         return lowerPath.endsWith(".zip") ||
+                lowerPath.endsWith(".rar") ||
                 lowerPath.endsWith(".jar") ||
                 lowerPath.endsWith(".war");
     }
