@@ -22,10 +22,7 @@ Code File Aggregator - это Java-приложение, которое скан
 
 ### Языки программирования
 
-## Поддерживаемые форматы файлов
-
-### Языки программирования
-
+**Основные языки:**
 - Java (`.java`)
 - JavaScript (`.js`)
 - TypeScript (`.ts`)
@@ -33,38 +30,140 @@ Code File Aggregator - это Java-приложение, которое скан
 - C/C++ (`.cpp`, `.c`, `.h`, `.hpp`)
 - C# (`.cs`)
 - PHP (`.php`)
+- Go (`.go`)
+- Rust (`.rs`)
+- Swift (`.swift`)
+- Ruby (`.rb`)
+
+**JVM языки:**
+- Kotlin (`.kt`, `.kts`)
+- Scala (`.scala`)
+- Clojure (`.clj`, `.cljs`)
+
+**Функциональные языки:**
+- F# (`.fs`, `.fsx`)
+- Elm (`.elm`)
+- Haskell (`.hs`)
+- OCaml (`.ml`, `.mli`)
+
+**Системные языки:**
+- Zig (`.zig`)
+- V (`.v`)
+- D (`.d`)
+- Nim (`.nim`)
+
+**Скриптовые языки:**
+- Perl (`.pl`, `.pm`)
+- R (`.r`)
+- Lua (`.lua`)
+- Julia (`.jl`)
+
+**Mobile/Desktop:**
+- Objective-C (`.m`)
+- Objective-C++ (`.mm`)
+- Dart (`.dart`)
+- Visual Basic (`.vb`)
+
+**Другие:**
+- Elixir (`.ex`, `.exs`)
+- Erlang (`.erl`, `.hrl`)
 
 ### Веб-технологии
 
 - HTML (`.html`)
-- CSS (`.css`)
+- CSS (`.css`, `.scss`, `.sass`, `.less`, `.styl`)
+- Vue (`.vue`)
+- Svelte (`.svelte`)
+- JSX (`.jsx`)
+- TSX (`.tsx`)
+- Astro (`.astro`)
+- GraphQL (`.graphql`, `.gql`)
+
+### Конфигурационные файлы и данные
+
 - XML (`.xml`)
-
-### Конфигурационные файлы
-
 - JSON (`.json`)
 - YAML (`.yml`, `.yaml`)
 - Properties (`.properties`)
-- Gradle (`.gradle`, `build.gradle`)
+- TOML (`.toml`)
+- INI (`.ini`, `.cfg`)
+- ENV (`.env`)
+- Protocol Buffers (`.proto`)
+- Avro Schema (`.avsc`)
+- XML Schema (`.xsd`)
+- Property List (`.plist`)
+
+### Системы сборки
+
+- Gradle (`.gradle`)
 - Maven (`pom.xml`)
+- CMake (`CMakeLists.txt`, `.cmake`)
+- SBT (`.sbt`)
+- Bazel (`.bazel`, `.bzl`)
+- Nix (`.nix`)
+- Make (`.mk`)
+- Meson (`meson.build`)
 
 ### Документация и скрипты
 
 - Markdown (`.md`)
-- Text (`.txt`)
+- reStructuredText (`.rst`)
+- AsciiDoc (`.adoc`, `.asciidoc`)
+- LaTeX (`.tex`)
+- Org-mode (`.org`)
+- Plain Text (`.txt`)
 - SQL (`.sql`)
-- Shell scripts (`.sh`, `.bat`, `.ps1`)
+
+**Скрипты:**
+- Shell (`.sh`, `.bat`, `.ps1`, `.zsh`, `.fish`, `.csh`)
+- AWK (`.awk`)
+- sed (`.sed`)
 
 ### Специальные файлы
 
-- `Dockerfile`
-- `Makefile`
-- `README`
-- `LICENSE`
-- `package.json`
-- `requirements.txt`
-- `Cargo.toml`
-- `go.mod`
+**Конфигурации:**
+- Docker (`Dockerfile`, `.dockerfile`)
+- Make (`Makefile`)
+- EditorConfig (`.editorconfig`)
+- Prettier (`.prettierrc`)
+- ESLint (`.eslintrc`)
+
+**Управление зависимостями:**
+- npm (`package.json`, `package-lock.json`)
+- Yarn (`yarn.lock`)
+- pip (`requirements.txt`)
+- Cargo (`Cargo.toml`)
+- Go (`go.mod`, `go.sum`)
+- Composer (`composer.json`, `composer.lock`)
+- Ruby (`Gemfile`, `Gemfile.lock`)
+- Elixir (`mix.exs`)
+- Julia (`Project.toml`)
+- Python (`pyproject.toml`, `Pipfile`, `poetry.lock`)
+- Deno (`deno.json`)
+- Bun (`bun.lockb`)
+- Dart/Flutter (`pubspec.yaml`)
+
+**Документация:**
+- `README` (все варианты)
+- `CHANGELOG` (все варианты)
+- `LICENSE` (все варианты)
+
+**Другие:**
+- `.gitignore`
+- `.gitattributes`
+- `BUILD` (Bazel)
+- `WORKSPACE` (Bazel)
+- `flake.nix`
+- `shell.nix`
+- `default.nix`
+
+### Игнорируемые директории (автоматически исключаются)
+- `.git`, `.svn`, `.hg`
+- `.idea`, `.vscode`, `.settings`
+- `node_modules`, `vendor`
+- `target`, `build`, `bin`
+- `obj`, `dist`, `out`
+- `.gradle`, `.maven`
 
 ## Системные требования
 
@@ -163,26 +262,46 @@ my_project
 src/
 ├── main/java/dev/cheercode/
 │   ├── FileAggregatorApp.java          # Главный класс приложения
+│   ├── collector/                      # Сборщики файлов
+│   │   └── FileCollector.java          # Сборщик файлов из директорий и архивов
 │   ├── contract/                       # Интерфейсы
-│   │   ├── FileFilter.java
-│   │   ├── FileProcessor.java
-│   │   ├── OutputFormatter.java
-│   │   └── UserInterface.java
-│   ├── core/                          # Основная логика
-│   │   ├── FileAggregator.java
-│   │   └── ProcessorFactory.java
-│   ├── filter/                        # Фильтры файлов
-│   │   ├── CodeFileFilter.java
-│   │   └── SelectiveFileFilter.java
-│   ├── processor/                     # Обработчики файлов
-│   │   ├── DirectoryProcessor.java
-│   │   └── ZipProcessor.java
-│   ├── selector/                      # Селекторы файлов
-│   │   └── InteractiveFileSelector.java
-│   ├── ui/                           # Пользовательский интерфейс
-│   │   └── ConsoleUserInterface.java
-│   └── formatter/                     # Форматтеры вывода
-│       └── TxtOutputFormatter.java
+│   │   ├── FileFilter.java             # Интерфейс для фильтрации файлов
+│   │   ├── FileItem.java               # Интерфейс для представления файла/директории
+│   │   ├── FileProcessor.java          # Интерфейс для обработки файлов
+│   │   ├── FileSelector.java           # Интерфейс для выбора файлов
+│   │   ├── OutputFormatter.java        # Интерфейс для форматирования вывода
+│   │   ├── OutputWriter.java           # Интерфейс для записи вывода
+│   │   └── UserInterface.java          # Интерфейс пользовательского ввода/вывода
+│   ├── core/                           # Основная логика
+│   │   ├── FileAggregator.java         # Основной класс агрегатора
+│   │   └── ProcessorFactory.java       # Фабрика процессоров
+│   ├── filter/                         # Фильтры файлов
+│   │   ├── CodeFileFilter.java         # Фильтр кодовых файлов
+│   │   ├── SelectiveFileFilter.java    # Фильтр с возможностью выбора
+│   │   ├── config/                     # Конфигурации фильтров
+│   │   │   ├── FileExtensionConfig.java # Конфиг расширений файлов
+│   │   │   └── SpecialFilesConfig.java  # Конфиг специальных файлов
+│   │   ├── rules/                      # Правила фильтрации
+│   │   │   └── FileInclusionRules.java  # Правила включения файлов
+│   │   └── util/                       # Утилиты для работы с путями
+│   │       └── FilePathUtils.java       # Утилиты для обработки путей
+│   ├── formatter/                      # Форматтеры вывода
+│   │   └── TxtOutputFormatter.java     # Текстовый форматтер
+│   ├── io/                             # Ввод/вывод
+│   │   └── FileOutputWriter.java       # Писатель в файл
+│   ├── model/                          # Модели данных
+│   │   └── FileItemImpl.java           # Реализация FileItem
+│   ├── processor/                      # Обработчики файлов
+│   │   ├── DirectoryProcessor.java     # Обработчик директорий
+│   │   └── ZipProcessor.java           # Обработчик архивов
+│   ├── selector/                       # Селекторы файлов
+│   │   ├── InteractiveFileSelector.java # Интерактивный селектор
+│   │   ├── handler/                    # Обработчики команд
+│   │   │   └── UserSelectionHandler.java # Обработчик выбора пользователя
+│   │   └── presenter/                  # Представление списка файлов
+│   │       └── FileListPresenter.java   # Презентер списка файлов
+│   └── ui/                             # Пользовательский интерфейс
+│       └── ConsoleUserInterface.java    # Консольный интерфейс
 ```
 
 ## Архитектура
