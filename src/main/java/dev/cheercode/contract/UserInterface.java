@@ -3,7 +3,7 @@ package dev.cheercode.contract;
 public interface UserInterface {
     String getInputPath();
 
-    String getOutputPath();
+    String getOutputPath(String inputPath);
 
     String getCommand();
 

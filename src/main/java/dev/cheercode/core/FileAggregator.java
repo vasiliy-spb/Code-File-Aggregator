@@ -31,7 +31,7 @@ public class FileAggregator {
             showWelcomeMessage();
 
             String inputPath = getValidInputPath();
-            String outputPath = userInterface.getOutputPath();
+            String outputPath = userInterface.getOutputPath(inputPath);
 
             // Интерактивный выбор файлов
             FileSelector fileSelector = new InteractiveFileSelector(baseFileFilter, userInterface);

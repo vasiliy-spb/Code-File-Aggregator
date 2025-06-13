@@ -2,6 +2,9 @@ package dev.cheercode.ui;
 
 import dev.cheercode.contract.UserInterface;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class ConsoleUserInterface implements UserInterface {
@@ -23,22 +26,60 @@ public class ConsoleUserInterface implements UserInterface {
         return scanner.nextLine().trim();
     }
 
+//    @Override
+//    public String getOutputPath() {
+//        System.out.println("Введите имя выходного файла (например, project.txt): ");
+//        String path = scanner.nextLine().trim();
+//
+//        if (path.isEmpty()) {
+//            path = "aggregated_files.txt";
+//            showMessage("Используется имя по умолчанию: " + path);
+//        }
+//
+//        if (!path.toLowerCase().endsWith(".txt")) {
+//            path += ".txt";
+//            showMessage("Добавлено расширение .txt: " + path);
+//        }
+//
+//        return path;
+//    }
+
     @Override
-    public String getOutputPath() {
-        System.out.println("Введите имя выходного файла (например, project.txt): ");
-        String path = scanner.nextLine().trim();
+    public String getOutputPath(String inputPath) {
+        Path input = Paths.get(inputPath).toAbsolutePath();
+        Path parentDir = input.getParent();  // Родительская директория (для архивов) или сама директория (если это папка)
+        String defaultName = "aggregated_files.txt";
 
-        if (path.isEmpty()) {
-            path = "aggregated_files.txt";
-            showMessage("Используется имя по умолчанию: " + path);
+        // Если входной путь — директория, сохраняем в ней
+        if (Files.isDirectory(input)) {
+            parentDir = input;
         }
 
-        if (!path.toLowerCase().endsWith(".txt")) {
-            path += ".txt";
-            showMessage("Добавлено расширение .txt: " + path);
+        // Предлагаем путь по умолчанию
+        Path defaultOutput = parentDir.resolve(defaultName);
+        System.out.printf("Введите имя выходного файла (по умолчанию: %s): \n", defaultOutput);
+        String userPath = scanner.nextLine().trim();
+
+        // Если пользователь ничего не ввёл, используем путь по умолчанию
+        Path finalPath;
+        if (userPath.isEmpty()) {
+            finalPath = defaultOutput;
+        } else {
+            // Если введён относительный путь — сохраняем в той же директории
+            if (!Paths.get(userPath).isAbsolute()) {
+                finalPath = parentDir.resolve(userPath);
+            } else {
+                finalPath = Paths.get(userPath);
+            }
         }
 
-        return path;
+        // Добавляем .txt, если его нет
+        if (!finalPath.getFileName().toString().toLowerCase().endsWith(".txt")) {
+            finalPath = finalPath.resolveSibling(finalPath.getFileName() + ".txt");
+            System.out.println("Добавлено расширение .txt: " + finalPath);
+        }
+
+        return finalPath.toString();
     }
 
     @Override
