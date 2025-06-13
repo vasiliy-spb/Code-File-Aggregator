@@ -186,9 +186,9 @@ cd Code-File-Aggregator
 ## Использование
 
 1. **Запуск приложения**
-   ```bash
-   java -jar build/libs/Code_File_Aggregator-1.0-SNAPSHOT.jar
-   ```
+```bash
+java -jar build/libs/Code_File_Aggregator-1.0-SNAPSHOT.jar
+```
 
 2. **Указание пути к проекту**
     - Введите путь к директории проекта или архиву с кодом
