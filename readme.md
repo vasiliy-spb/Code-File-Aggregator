@@ -249,6 +249,12 @@ my_project
 Введите команду: 
 > -4
 
+Текущий список файлов:
+  1. + [DIR]  src
+  2. + [FILE] src/main/java/Main.java
+  3. + [FILE] build.gradle
+  4. - [FILE] README.md
+
 Введите команду: 
 > [пустая строка]
 
