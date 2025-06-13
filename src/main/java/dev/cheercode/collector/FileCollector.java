@@ -27,7 +27,7 @@ public class FileCollector {
         } else if (isArchive(inputPath)) {
             return collectFromArchive(inputPath);
         }
-        throw new IllegalArgumentException("Неподдерживаемый тип входного пути: " + inputPath);
+        throw new IllegalArgumentException("Unsupported input path type:" + inputPath);
     }
 
     private List<FileItem> collectFromDirectory(String inputPath) throws IOException {
@@ -35,7 +35,6 @@ public class FileCollector {
         Map<String, FileItem> items = new TreeMap<>();
         Set<String> includedDirectories = new HashSet<>();
 
-        // Собираем файлы, которые проходят фильтр
         Files.walk(directory)
                 .filter(Files::isRegularFile)
                 .filter(file -> fileFilter.shouldInclude(file.toString()))
@@ -43,11 +42,9 @@ public class FileCollector {
                     String relativePath = directory.relativize(file).toString().replace('\\', '/');
                     items.put(relativePath, new FileItemImpl(relativePath, false, relativePath));
 
-                    // Отмечаем все родительские директории как нужные
                     addParentDirectories(relativePath, includedDirectories);
                 });
 
-        // Добавляем только те директории, которые содержат нужные файлы
         for (String dirPath : includedDirectories) {
             items.put(dirPath, new FileItemImpl(dirPath, true, dirPath));
         }
@@ -74,7 +71,6 @@ public class FileCollector {
             }
         }
 
-        // Добавляем директории в начало списка
         List<FileItem> result = new ArrayList<>();
         for (String dir : includedDirectories) {
             result.add(new FileItemImpl(dir, true, dir));

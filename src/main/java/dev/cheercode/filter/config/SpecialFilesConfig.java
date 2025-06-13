@@ -5,14 +5,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Конфигурация специальных файлов и директорий.
- * Ответственность: управление списками специальных файлов и игнорируемых директорий.
- */
 public final class SpecialFilesConfig {
 
     private static final Set<String> CONFIG_FILES = createSet(
-            "Dockerfile", "Makefile", "CMakeLists.txt", "meson.build",
+            "README", "LICENSE", "Dockerfile", "Makefile", "CMakeLists.txt", "meson.build",
             "pom.xml", "build.gradle", "build.sbt", "package.json",
             "requirements.txt", "Cargo.toml", "go.mod", "go.sum",
             "Pipfile", "poetry.lock", "yarn.lock", "package-lock.json",
@@ -33,7 +29,6 @@ public final class SpecialFilesConfig {
     );
 
     private SpecialFilesConfig() {
-        // Утилитный класс
     }
 
     public static boolean isConfigFile(String fileName) {

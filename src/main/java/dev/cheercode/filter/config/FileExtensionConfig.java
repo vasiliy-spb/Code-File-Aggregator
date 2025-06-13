@@ -5,10 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Конфигурация поддерживаемых расширений файлов для разработки.
- * Ответственность: управление списками файловых расширений.
- */
 public final class FileExtensionConfig {
 
     private static final Set<String> PROGRAMMING_LANGUAGES = createSet(
@@ -68,7 +64,6 @@ public final class FileExtensionConfig {
     }
 
     private FileExtensionConfig() {
-        // Утилитный класс
     }
 
     public static Set<String> getAllSupportedExtensions() {

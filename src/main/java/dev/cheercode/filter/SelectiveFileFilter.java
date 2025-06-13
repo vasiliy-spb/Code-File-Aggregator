@@ -22,16 +22,13 @@ public class SelectiveFileFilter implements FileFilter {
 
     @Override
     public boolean shouldInclude(String filePath) {
-        // Нормализуем путь для сравнения
         String normalizedPath = filePath.replace('\\', '/');
 
-        // Сначала проверяем базовый фильтр
         if (!baseFilter.shouldInclude(filePath)) {
             return false;
         }
 
-        // Затем проверяем, включен ли файл пользователем
         return includedFiles.contains(normalizedPath) ||
-                includedFiles.stream().anyMatch(included -> normalizedPath.endsWith(included));
+                includedFiles.stream().anyMatch(normalizedPath::endsWith);
     }
 }

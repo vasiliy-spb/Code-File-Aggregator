@@ -28,6 +28,7 @@ public class ZipProcessor implements FileProcessor {
     public boolean canProcess(String inputPath) {
         String lowerPath = inputPath.toLowerCase();
         return lowerPath.endsWith(".zip") ||
+                lowerPath.endsWith(".rar") ||
                 lowerPath.endsWith(".jar") ||
                 lowerPath.endsWith(".war");
     }

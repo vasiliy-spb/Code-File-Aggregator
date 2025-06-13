@@ -12,16 +12,13 @@ import java.util.List;
 
 public class FileAggregator {
     private final UserInterface userInterface;
-    private final ProcessorFactory processorFactory;
     private final OutputFormatter formatter;
     private final FileFilter baseFileFilter;
 
     public FileAggregator(UserInterface userInterface,
-                          ProcessorFactory processorFactory,
                           OutputFormatter formatter,
                           FileFilter baseFileFilter) {
         this.userInterface = userInterface;
-        this.processorFactory = processorFactory;
         this.formatter = formatter;
         this.baseFileFilter = baseFileFilter;
     }
@@ -33,12 +30,10 @@ public class FileAggregator {
             String inputPath = getValidInputPath();
             String outputPath = userInterface.getOutputPath(inputPath);
 
-            // Интерактивный выбор файлов
             FileSelector fileSelector = new InteractiveFileSelector(baseFileFilter, userInterface);
             List<FileItem> availableFiles = fileSelector.collectFiles(inputPath);
             fileSelector.processUserSelection(availableFiles);
 
-            // Создаем новый фильтр на основе выбранных файлов
             FileFilter selectiveFilter = new SelectiveFileFilter(availableFiles, baseFileFilter);
             ProcessorFactory selectiveProcessorFactory = new ProcessorFactory(selectiveFilter, formatter);
 
@@ -83,7 +78,7 @@ public class FileAggregator {
         FileProcessor processor = processorFactory.getProcessor(inputPath);
 
         if (processor == null) {
-            throw new IllegalArgumentException("Неподдерживаемый тип файла. Поддерживаются директории и ZIP архивы.");
+            throw new IllegalArgumentException("Unsupported file type. Directories and archives (zip, rar, jar, war) are supported.");
         }
 
         try (OutputWriter writer = new FileOutputWriter(outputPath)) {
