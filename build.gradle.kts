@@ -1,9 +1,14 @@
 plugins {
     id("java")
+    id("application")
 }
 
 group = "dev.cheercode"
 version = "1.0-SNAPSHOT"
+
+application {
+    mainClass.set("dev.cheercode.FileAggregatorApp")
+}
 
 repositories {
     mavenCentral()
@@ -16,4 +21,10 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.jar {
+    manifest {
+        attributes("Main-class" to "dev.cheercode.FileAggregatorApp")
+    }
 }
